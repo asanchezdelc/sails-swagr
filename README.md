@@ -82,7 +82,17 @@ Create a file called express.js in your config folder and put the code:
       );
       app.use(app.router);
       sails.on('ready', function () {
+        // Exclude some route from ApiDoc
+        var exclude = [
+          'csrfToken', 
+          'csrftoken', 
+          '__getcookie', 
+          '^[\w\W]*\/(v1)\/[\w\W]*',
+          'v1',
+          'swagger'];
+        
         swagger.sailsGenerate({
+          exclude: exclude,
           routes: sails.router._privateRouter.routes,
           models: sails.models
         });
