@@ -5,6 +5,3 @@ configuration: Release
 before_build:
   - npm install -g sails
   - npm install
-
-build:
-  - publish_wap: true
