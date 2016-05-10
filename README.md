@@ -39,36 +39,56 @@ Configure sails-swagr as express middleware.
 
 ## Sails Integration
 
-Modify the `config/http.js` to look like:
+Create a file called express.js in your config folder and put the code:
 
-```
-customMiddleware: function (app) {
-    var swagger = require('sails-swagr');  
-    var express = require('sails/node_modules/express');
+```javascript
+  var path = require('path');
 
-    app.use(swagger.init(express, app, {
-        apiVersion: '1.0',
-        swaggerVersion: '2.0',
-        swaggerURL: '/api/docs',
-        swaggerJSON: '/api-docs.json',
-        basePath: sails.getBaseurl(),
-        info: {
-          title: ' API Swagger Documentation',
-          description: 'Sails Swagr'
-        },
-        apis: [
-          './api/docs/Cards.yml', 
-          './api/docs/Stories.yml',
-          './api/docs/Users.yml',
-        ]
-    })); 
-    sails.on('ready', function() {
-      swagger.sailsGenerate({
-        routes: sails.router._privateRouter.routes,
-        models: sails.models
+  /**
+   * Express Custom Middleware
+   * (sails.config.middleware.cutom)
+   *
+   * Configure custom express middleware which will be exposed
+   * automatically by Sails.
+   *
+   * For more information on configuration, check out:
+   * https://gist.github.com/mikermcneil/6255295
+   */
+
+  module.exports.express = {
+    middleware: {
+      custom: true
+    },
+
+    customMiddleware: function (app) {
+      var swagger = require('sails-swagr');
+      var express = require('../node_modules/sails/node_modules/express');
+
+      app.use(
+        swagger.init(express, app, {
+          apiVersion: '1.0',
+          swaggerVersion: '2.0',
+          swaggerURL: '/api/docs',
+          swaggerJSON: '/api-docs.json',
+          basePath: "http://localhost:1337",
+          info: {
+            title: ' API Doc ',
+            description: 'API Services Documentation'
+          },
+          apis: [
+            './api/docs/User.yml',
+          ]
+        })
+      );
+      app.use(app.router);
+      sails.on('ready', function () {
+        swagger.sailsGenerate({
+          routes: sails.router._privateRouter.routes,
+          models: sails.models
+        });
       });
-    });
-  }
+    }
+  };
 
 ```
 
