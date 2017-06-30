@@ -1,0 +1,7 @@
+version: '1.0.{build}'
+
+configuration: Release
+
+before_build:
+  - npm install -g sails
+  - npm install
